@@ -564,7 +564,7 @@ that cannot be itched
 ///////////////////////////////////////////////// Prisoner scanner ////////////////////////////////////
 
 /obj/item/device/prisoner_scanner
-	name = "Security RecordTrak"
+	name = "security RecordTrak"
 	desc = "A device used to scan in prisoners and update their security records."
 	icon_state = "recordtrak"
 	var/mode = 1
@@ -691,6 +691,9 @@ that cannot be itched
 			I = H.wear_id
 		else if (ismobcritter(user))
 			I = locate(/obj/item/card/id) in user.contents
+		else if (issilicon(user))
+			var/mob/living/silicon/S = user
+			I = S.botcard
 		if (!I || !(access_security in I.access))
 			boutput(user, "<span class='alert'>Insufficient access.</span>")
 			return
@@ -725,4 +728,5 @@ that cannot be itched
 			p.name = "Official Caution - [ticket_target]"
 			p.info = ticket_text
 			p.icon_state = "paper_caution"
-		return
+
+		return T.target_byond_key

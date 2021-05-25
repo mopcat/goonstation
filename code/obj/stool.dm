@@ -682,7 +682,10 @@
 		return 1
 
 	buckle_in(mob/living/to_buckle, mob/living/user, var/stand = 0)
-		if(!istype(to_buckle)) return
+		if(!istype(to_buckle))
+			return
+		if(user.hasStatus("weakened"))
+			return
 		if(src.buckled_guy && src.buckled_guy.buckled == src && to_buckle != src.buckled_guy) return
 
 		if (!can_buckle(to_buckle,user))
@@ -690,6 +693,8 @@
 
 		if(stand)
 			if(ishuman(to_buckle))
+				if(ON_COOLDOWN(to_buckle, "chair_stand", 1 SECOND))
+					return
 				user.visible_message("<span class='notice'><b>[to_buckle]</b> climbs up on [src]!</span>", "<span class='notice'>You climb up on [src].</span>")
 
 				var/mob/living/carbon/human/H = to_buckle
@@ -1045,7 +1050,7 @@
 				"<span class='alert'>You're tossed out of [src] as it tips [T ? "while rolling over [T]" : "over"]!</span>")
 				var/turf/target = get_edge_target_turf(src, src.dir)
 				M.throw_at(target, 5, 1)
-				M.changeStatus("stunned", 80)
+				M.changeStatus("stunned", 8 SECONDS)
 				M.changeStatus("weakened", 5 SECONDS)
 			else
 				src.visible_message("<span class='alert'>[src] tips [T ? "as it rolls over [T]" : "over"]!</span>")
@@ -1447,9 +1452,9 @@
 		for (var/mob/M in AIviewers(src, null))
 			M.show_message("<span class='alert'>The electric chair went off!</span>", 3)
 			if (lethal)
-				playsound(src.loc, "sound/effects/electric_shock.ogg", 100, 0)
+				playsound(src.loc, "sound/effects/electric_shock.ogg", 50, 0)
 			else
-				playsound(src.loc, "sound/effects/sparks4.ogg", 100, 0)
+				playsound(src.loc, "sound/effects/sparks4.ogg", 50, 0)
 
 		if (src.buckled_guy && ishuman(src.buckled_guy))
 			var/mob/living/carbon/human/H = src.buckled_guy
